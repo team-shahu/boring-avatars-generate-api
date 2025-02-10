@@ -8,6 +8,7 @@
 </script>
 <template>
     <Avatar
+    id="svg"
     :size="size"
     :variant="variant"
     :name="seed"

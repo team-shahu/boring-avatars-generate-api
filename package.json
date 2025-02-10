@@ -14,5 +14,8 @@
     "vue": "latest",
     "vue-boring-avatars": "^1.4.0",
     "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^0.1.67"
   }
 }
