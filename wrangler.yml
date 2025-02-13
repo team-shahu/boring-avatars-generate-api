@@ -1,0 +1,15 @@
+name = "boring-avatars-generate-api"
+type = "javascript"
+account_id = "a8e8211c674c2b00f3a8996b65b56447"
+workers_dev = true
+compatibility_date = "2024-11-01"
+
+[site]
+bucket = ".output/public"
+entry-point = ".output"
+
+[build]
+command = "pnpm build"
+
+[build.upload]
+format = "service-worker"

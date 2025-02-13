@@ -1,9 +1,12 @@
-import { useRequestURL } from "nuxt/app";
-import { createCanvas, GlobalFonts, loadImage } from "@napi-rs/canvas"
+import { initialize, svg2png } from 'svg2png-wasm'
+// @ts-ignore
+import wasm from 'svg2png-wasm/svg2png_wasm_bg.wasm'
 
 // http://127.0.0.1:3000/api/v1/generate?size=300&variant=beam&seed=hogehoge
 export default defineEventHandler(async (event) => {
   try {
+    await initialize(await wasm);
+
     // クエリからsize, variant, seedを取得
     let { size, variant, seed } = getQuery(event);
 
@@ -23,17 +26,8 @@ export default defineEventHandler(async (event) => {
       if (!match) throw new Error('SVG not found in response');
       return match[0];
     });
-    // svgをimageに変換
-    const svgImage = await loadImage(`data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`);
-    // dataurlを取得
-    const canvas = createCanvas(size, size);
-    const ctx = canvas.getContext('2d');
-    const image = await loadImage(svgImage);
-    ctx.drawImage(image, 0, 0);
-    // dataurlを取得
-    const dataurl = canvas.toDataURL('image/png');
-    //return dataurl;
-    await send(event, Buffer.from(dataurl.split(',')[1], 'base64'), 'image/png');
+    const png = await svg2png(svg, { width: size, height: size });
+    await send(event, png, 'image/png');
   } catch (err) {
     // Error handling
     return { err:  (err as Error).message };
